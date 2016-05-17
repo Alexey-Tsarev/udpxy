@@ -1,5 +1,5 @@
-This is the updxy 1.0.23-9 with patch,
-which prevent using of udpxy if you don't know secret uri.
+This is the updxy 1.0.23-9 with patch preventing of
+udpxy using if you don't know specific secret uri.
 
 
 Detailed description:
