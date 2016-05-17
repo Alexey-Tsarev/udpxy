@@ -97,6 +97,8 @@ init_uopt( struct udpxy_opt* uo )
     uo->dstfile         = NULL;
     uo->mcast_refresh   = DEFAULT_MCAST_REFRESH;
 
+    uo->uri_start_str   = "";
+
     if (-1 == read_http_footer (uo->h200_ftr, sizeof(uo->h200_ftr))) {
         rc = -1; /* modify rc only if there is an error */
     }

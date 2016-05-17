@@ -1199,9 +1199,9 @@ udpxy_main( int argc, char* const argv[] )
  * those features are experimental and for dev debugging ONLY
  * */
 #ifdef UDPXY_FILEIO
-    static const char UDPXY_OPTMASK[] = "TvSa:l:p:m:c:B:n:R:r:w:H:M:";
+    static const char UDPXY_OPTMASK[] = "TvSa:l:p:m:c:B:n:R:u:r:w:H:M:";
 #else
-    static const char UDPXY_OPTMASK[] = "TvSa:l:p:m:c:B:n:R:H:M:";
+    static const char UDPXY_OPTMASK[] = "TvSa:l:p:m:c:B:n:R:u:H:M:";
 #endif
 
     struct sigaction qact, iact, cact, oldact;
@@ -1350,6 +1350,29 @@ udpxy_main( int argc, char* const argv[] )
                             rc = ERR_PARAM;
                             break;
                        }
+                      break;
+
+            case 'u':
+                      g_uopt.uri_start_str = strdup( optarg );
+                      char *tmp;
+
+                      tmp = strdup(CMD_UDP);
+                      strcpy((char *) CMD_UDP, g_uopt.uri_start_str);
+                      strcat((char *) CMD_UDP, tmp);
+
+                      tmp = strdup(CMD_STATUS);
+                      strcpy((char *) CMD_STATUS, g_uopt.uri_start_str);
+                      strcat((char *) CMD_STATUS, tmp);
+
+                      tmp = strdup(CMD_RESTART);
+                      strcpy((char *) CMD_RESTART, g_uopt.uri_start_str);
+                      strcat((char *) CMD_RESTART, tmp);
+
+                      tmp = strdup(CMD_RTP);
+                      strcpy((char *) CMD_RTP, g_uopt.uri_start_str);
+                      strcat((char *) CMD_RTP, tmp);
+
+                      free(tmp);
                       break;
 
             case ':':
