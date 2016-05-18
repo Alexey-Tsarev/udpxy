@@ -71,11 +71,6 @@ struct udpxy_opt {
     flag_t  tcp_nodelay;     /* apply TCP_NODELAY option to
                                 newly-accepted sockets                  */
     char    cnt_type[80];   /* custom HTTP 200 content type             */
-
-    char*   URI_CMD_UDP;     /* uri plus udp                            */
-    char*   URI_CMD_STATUS;  /* uri plus status                         */
-    char*   URI_CMD_RESTART; /* uri plus restart                        */
-    char*   URI_CMD_RTP;     /* uri plus rtp                            */
 };
 
 

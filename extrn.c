@@ -24,15 +24,15 @@
 
 /* server commands
  */
-const char  CMD_UDP[]            = "udp";
-const char  CMD_STATUS[]         = "status";
-const char  CMD_RESTART[]        = "restart";
-const char  CMD_RTP[]            = "rtp";
+char * CMD_UDP;
+char * CMD_STATUS;
+char * CMD_RESTART;
+char * CMD_RTP;
 
-const size_t CMD_UDP_LEN         = sizeof(CMD_UDP);
-const size_t CMD_STATUS_LEN      = sizeof(CMD_STATUS);
-const size_t CMD_RESTART_LEN     = sizeof(CMD_RESTART);
-const size_t CMD_RTP_LEN         = sizeof(CMD_RTP);
+size_t CMD_UDP_LEN;
+size_t CMD_STATUS_LEN;
+size_t CMD_RESTART_LEN;
+size_t CMD_RTP_LEN;
 
 const char UDPXY_COPYRIGHT_NOTICE[] =
     "udpxy and udpxrec are Copyright (C) 2008-2013 Pavel V. Cherenkov and licensed under GNU GPLv3";

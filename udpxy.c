@@ -60,15 +60,15 @@
 
 /* external globals */
 
-extern const char   CMD_UDP[];
-extern const char   CMD_STATUS[];
-extern const char   CMD_RESTART[];
-extern const char   CMD_RTP[];
+extern char * CMD_UDP;
+extern char * CMD_STATUS;
+extern char * CMD_RESTART;
+extern char * CMD_RTP;
 
-extern const size_t CMD_UDP_LEN;
-extern const size_t CMD_STATUS_LEN;
-extern const size_t CMD_RESTART_LEN;
-extern const size_t CMD_RTP_LEN;
+extern size_t CMD_UDP_LEN;
+extern size_t CMD_STATUS_LEN;
+extern size_t CMD_RESTART_LEN;
+extern size_t CMD_RTP_LEN;
 
 extern const char   IPv4_ALL[];
 
@@ -887,8 +887,8 @@ process_command( int new_sockfd, struct server_ctx* ctx )
 
     assert( (new_sockfd > 0) && ctx );
 
-    if( 0 == strncmp( ctx->rq.cmd, g_uopt.URI_CMD_UDP, sizeof(ctx->rq.cmd) ) ||
-        0 == strncmp( ctx->rq.cmd, g_uopt.URI_CMD_RTP, sizeof(ctx->rq.cmd) ) ) {
+    if( 0 == strncmp( ctx->rq.cmd, CMD_UDP, sizeof(ctx->rq.cmd) ) ||
+        0 == strncmp( ctx->rq.cmd, CMD_RTP, sizeof(ctx->rq.cmd) ) ) {
         if( ctx->clfree ) {
             rc = udp_relay( new_sockfd, ctx );
         }
@@ -898,10 +898,10 @@ process_command( int new_sockfd, struct server_ctx* ctx )
                     ctx->clmax);
         }
     }
-    else if( 0 == strncmp( ctx->rq.cmd, g_uopt.URI_CMD_STATUS, sizeof(ctx->rq.cmd) ) ) {
+    else if( 0 == strncmp( ctx->rq.cmd, CMD_STATUS, sizeof(ctx->rq.cmd) ) ) {
         rc = report_status( new_sockfd, ctx, STAT_OPTIONS );
     }
-    else if( 0 == strncmp( ctx->rq.cmd, g_uopt.URI_CMD_RESTART, sizeof(ctx->rq.cmd) ) ) {
+    else if( 0 == strncmp( ctx->rq.cmd, CMD_RESTART, sizeof(ctx->rq.cmd) ) ) {
         (void) report_status( new_sockfd, ctx, RESTART_OPTIONS );
 
         terminate_all_clients( ctx );
@@ -1195,6 +1195,8 @@ udpxy_main( int argc, char* const argv[] )
     char pidfile[ MAXPATHLEN ] = "\0";
     u_short MIN_MCAST_REFRESH = 0, MAX_MCAST_REFRESH = 0;
 
+    char * tmp;
+
 /* support for -r -w (file read/write) option is disabled by default;
  * those features are experimental and for dev debugging ONLY
  * */
@@ -1211,10 +1213,15 @@ udpxy_main( int argc, char* const argv[] )
 
     rc = init_uopt( &g_uopt );
 
-    g_uopt.URI_CMD_UDP     = strdup(CMD_UDP);
-    g_uopt.URI_CMD_STATUS  = strdup(CMD_STATUS);
-    g_uopt.URI_CMD_RESTART = strdup(CMD_RESTART);
-    g_uopt.URI_CMD_RTP     = strdup(CMD_RTP);
+    CMD_UDP     = strdup("udp");
+    CMD_STATUS  = strdup("status");
+    CMD_RESTART = strdup("restart");
+    CMD_RTP     = strdup("rtp");
+
+    CMD_UDP_LEN     = sizeof(CMD_UDP);
+    CMD_STATUS_LEN  = sizeof(CMD_STATUS);
+    CMD_RESTART_LEN = sizeof(CMD_RESTART);
+    CMD_RTP_LEN     = sizeof(CMD_RTP);
 
     while( (0 == rc) && (-1 != (ch = getopt(argc, argv, UDPXY_OPTMASK))) ) {
         switch( ch ) {
@@ -1359,15 +1366,30 @@ udpxy_main( int argc, char* const argv[] )
                       break;
 
             case 'u':
-                      free(g_uopt.URI_CMD_UDP);
-                      free(g_uopt.URI_CMD_STATUS);
-                      free(g_uopt.URI_CMD_RESTART);
-                      free(g_uopt.URI_CMD_RTP);
+                      tmp=strdup(CMD_UDP);
+                      free(CMD_UDP);
+                      asprintf(&CMD_UDP,     "%s%s", optarg, tmp);
+                      free(tmp);
 
-                      asprintf(&g_uopt.URI_CMD_UDP,     "%s%s", optarg, CMD_UDP);
-                      asprintf(&g_uopt.URI_CMD_STATUS,  "%s%s", optarg, CMD_STATUS);
-                      asprintf(&g_uopt.URI_CMD_RESTART, "%s%s", optarg, CMD_RESTART);
-                      asprintf(&g_uopt.URI_CMD_RTP,     "%s%s", optarg, CMD_RTP);
+                      tmp=strdup(CMD_STATUS);
+                      free(CMD_STATUS);
+                      asprintf(&CMD_STATUS,  "%s%s", optarg, tmp);
+                      free(tmp);
+
+                      tmp=strdup(CMD_RESTART);
+                      free(CMD_RESTART);
+                      asprintf(&CMD_RESTART, "%s%s", optarg, tmp);
+                      free(tmp);
+
+                      tmp=strdup(CMD_RTP);
+                      free(CMD_RTP);
+                      asprintf(&CMD_RTP,     "%s%s", optarg, tmp);
+                      free(tmp);
+
+                      CMD_UDP_LEN     = sizeof(CMD_UDP);
+                      CMD_STATUS_LEN  = sizeof(CMD_STATUS);
+                      CMD_RESTART_LEN = sizeof(CMD_RESTART);
+                      CMD_RTP_LEN     = sizeof(CMD_RTP);
                       break;
 
             case ':':
