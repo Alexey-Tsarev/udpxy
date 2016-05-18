@@ -887,8 +887,8 @@ process_command( int new_sockfd, struct server_ctx* ctx )
 
     assert( (new_sockfd > 0) && ctx );
 
-    if( 0 == strncmp( ctx->rq.cmd, CMD_UDP, sizeof(ctx->rq.cmd) ) ||
-        0 == strncmp( ctx->rq.cmd, CMD_RTP, sizeof(ctx->rq.cmd) ) ) {
+    if( 0 == strncmp( ctx->rq.cmd, g_uopt.URI_CMD_UDP, sizeof(ctx->rq.cmd) ) ||
+        0 == strncmp( ctx->rq.cmd, g_uopt.URI_CMD_RTP, sizeof(ctx->rq.cmd) ) ) {
         if( ctx->clfree ) {
             rc = udp_relay( new_sockfd, ctx );
         }
@@ -898,10 +898,10 @@ process_command( int new_sockfd, struct server_ctx* ctx )
                     ctx->clmax);
         }
     }
-    else if( 0 == strncmp( ctx->rq.cmd, CMD_STATUS, sizeof(ctx->rq.cmd) ) ) {
+    else if( 0 == strncmp( ctx->rq.cmd, g_uopt.URI_CMD_STATUS, sizeof(ctx->rq.cmd) ) ) {
         rc = report_status( new_sockfd, ctx, STAT_OPTIONS );
     }
-    else if( 0 == strncmp( ctx->rq.cmd, CMD_RESTART, sizeof(ctx->rq.cmd) ) ) {
+    else if( 0 == strncmp( ctx->rq.cmd, g_uopt.URI_CMD_RESTART, sizeof(ctx->rq.cmd) ) ) {
         (void) report_status( new_sockfd, ctx, RESTART_OPTIONS );
 
         terminate_all_clients( ctx );
@@ -1210,6 +1210,12 @@ udpxy_main( int argc, char* const argv[] )
     (void) get_pidstr( PID_RESET, "S" );
 
     rc = init_uopt( &g_uopt );
+
+    g_uopt.URI_CMD_UDP     = strdup(CMD_UDP);
+    g_uopt.URI_CMD_STATUS  = strdup(CMD_STATUS);
+    g_uopt.URI_CMD_RESTART = strdup(CMD_RESTART);
+    g_uopt.URI_CMD_RTP     = strdup(CMD_RTP);
+
     while( (0 == rc) && (-1 != (ch = getopt(argc, argv, UDPXY_OPTMASK))) ) {
         switch( ch ) {
             case 'v': set_verbose( &g_uopt.is_verbose );
@@ -1353,26 +1359,15 @@ udpxy_main( int argc, char* const argv[] )
                       break;
 
             case 'u':
-                      g_uopt.uri_start_str = strdup( optarg );
-                      char *tmp;
+                      free(g_uopt.URI_CMD_UDP);
+                      free(g_uopt.URI_CMD_STATUS);
+                      free(g_uopt.URI_CMD_RESTART);
+                      free(g_uopt.URI_CMD_RTP);
 
-                      tmp = strdup(CMD_UDP);
-                      strcpy((char *) CMD_UDP, g_uopt.uri_start_str);
-                      strcat((char *) CMD_UDP, tmp);
-
-                      tmp = strdup(CMD_STATUS);
-                      strcpy((char *) CMD_STATUS, g_uopt.uri_start_str);
-                      strcat((char *) CMD_STATUS, tmp);
-
-                      tmp = strdup(CMD_RESTART);
-                      strcpy((char *) CMD_RESTART, g_uopt.uri_start_str);
-                      strcat((char *) CMD_RESTART, tmp);
-
-                      tmp = strdup(CMD_RTP);
-                      strcpy((char *) CMD_RTP, g_uopt.uri_start_str);
-                      strcat((char *) CMD_RTP, tmp);
-
-                      free(tmp);
+                      asprintf(&g_uopt.URI_CMD_UDP,     "%s%s", optarg, CMD_UDP);
+                      asprintf(&g_uopt.URI_CMD_STATUS,  "%s%s", optarg, CMD_STATUS);
+                      asprintf(&g_uopt.URI_CMD_RESTART, "%s%s", optarg, CMD_RESTART);
+                      asprintf(&g_uopt.URI_CMD_RTP,     "%s%s", optarg, CMD_RTP);
                       break;
 
             case ':':

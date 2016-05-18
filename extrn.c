@@ -24,10 +24,10 @@
 
 /* server commands
  */
-char CMD_UDP[255]                = "udp";
-char CMD_STATUS[255]             = "status";
-char CMD_RESTART[255]            = "restart";
-char CMD_RTP[255]                = "rtp";
+const char  CMD_UDP[]            = "udp";
+const char  CMD_STATUS[]         = "status";
+const char  CMD_RESTART[]        = "restart";
+const char  CMD_RTP[]            = "rtp";
 
 const size_t CMD_UDP_LEN         = sizeof(CMD_UDP);
 const size_t CMD_STATUS_LEN      = sizeof(CMD_STATUS);
