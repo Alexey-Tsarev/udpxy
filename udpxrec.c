@@ -296,7 +296,7 @@ record()
     char* data = NULL;
 
     static const u_short RSOCK_TIMEOUT  = 5;
-    extern const char CMD_UDP[];
+    extern char * CMD_UDP;
 
     /* NOPs to eliminate warnings in lean version */
     (void)&t_delta; (void)&lrcv;

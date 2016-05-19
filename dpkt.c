@@ -768,10 +768,10 @@ int
 init_dstream_ctx( struct dstream_ctx* ds, const char* cmd, const char* fname,
                   ssize_t nmsgs )
 {
-    extern const char       CMD_UDP[];
-    extern const size_t     CMD_UDP_LEN;
-    extern const char       CMD_RTP[];
-    extern const size_t     CMD_RTP_LEN;
+    extern char * CMD_UDP;
+    extern size_t CMD_UDP_LEN;
+    extern char * CMD_RTP;
+    extern size_t CMD_RTP_LEN;
 
     assert( ds && cmd && (nmsgs > 0) );
 
